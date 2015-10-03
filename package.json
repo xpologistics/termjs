@@ -12,10 +12,13 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "mocha": "^2.3.3"
+    "coveralls": "^2.11.4",
+    "mocha": "^2.3.3",
+    "mocha-lcov-reporter": "^1.0.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "test-travis": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec ./test/*"
   },
   "repository": {
     "type": "git",
