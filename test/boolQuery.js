@@ -8,6 +8,16 @@ var should = require('should'); // overrides Object.prototype
 // put declerations here that you want to use like <obj>.should
 var FilterGenerator = require('../lib/generators/filterGenerator');
 
+var ValidateAppenderThrows = function (boolQuery, method) {
+    // object != BoolQuery
+    boolQuery[method].bind(boolQuery, {}).should.throw();
+    // null
+    boolQuery[method].bind(boolQuery, null).should.throw();
+    // numeric
+    boolQuery[method].bind(boolQuery, 84).should.throw();
+    // object that looks like BoolQuery
+    boolQuery[method].bind(boolQuery, {filters: {}, generators: {}}).should.throw();
+};
 
 describe('BoolQuery', function () {
 
@@ -37,29 +47,14 @@ describe('BoolQuery', function () {
         });
     });
 
-    describe('appenders', function () {
-
-        it('should return a FilterGenerator when using "must" passing a string', function () {
+    describe('#must', function () {
+        it('should return a FilterGenerator when passing a string', function () {
             var boolQuery = new BoolQuery();
             var result = boolQuery.must('test');
             result.should.be.an.instanceOf(FilterGenerator);
         });
 
-        it('should return a FilterGenerator when using "should" passing a string', function () {
-
-            var boolQuery = new BoolQuery();
-            var result = boolQuery.should('test');
-
-            result.should.be.an.instanceOf(FilterGenerator);
-        });
-
-        it('should return a FilterGenerator when using "mustNot" passing a string', function () {
-            var boolQuery = new BoolQuery();
-            var result = boolQuery.mustNot('test');
-            result.should.be.an.instanceOf(FilterGenerator);
-        });
-
-        it('should return current BoolQuery when using "must" passing an external BoolQuery', function () {
+        it('should return current BoolQuery when passing an external BoolQuery', function () {
             var parentBoolQuery = new BoolQuery();
             var externalBoolQuery = new BoolQuery();
             var result = parentBoolQuery.must(externalBoolQuery);
@@ -67,7 +62,24 @@ describe('BoolQuery', function () {
             should(result).equal(parentBoolQuery);
         });
 
-        it('should return current BoolQuery when using "should" passing an external BoolQuery', function () {
+        it('should throw when not passing a string or BoolQuery object', function () {
+            var boolQuery = new BoolQuery();
+            ValidateAppenderThrows(boolQuery, 'must');
+        });
+
+
+    });
+
+    describe('#should', function () {
+        it('should return a FilterGenerator when passing a string', function () {
+
+            var boolQuery = new BoolQuery();
+            var result = boolQuery.should('test');
+
+            result.should.be.an.instanceOf(FilterGenerator);
+        });
+
+        it('should return current BoolQuery when passing an external BoolQuery', function () {
             var parentBoolQuery = new BoolQuery();
             var externalBoolQuery = new BoolQuery();
             var result = parentBoolQuery.should(externalBoolQuery);
@@ -75,7 +87,21 @@ describe('BoolQuery', function () {
             should(result).equal(parentBoolQuery);
         });
 
-        it('should return current BoolQuery when using "mustNot" passing an external BoolQuery', function () {
+        it('should throw when not passing a string or BoolQuery object', function () {
+            var boolQuery = new BoolQuery();
+            ValidateAppenderThrows(boolQuery, 'should');
+        });
+
+    });
+
+    describe('#mustNot', function () {
+        it('should return a FilterGenerator when passing a string', function () {
+            var boolQuery = new BoolQuery();
+            var result = boolQuery.mustNot('test');
+            result.should.be.an.instanceOf(FilterGenerator);
+        });
+
+        it('should return current BoolQuery when passing an external BoolQuery', function () {
             var parentBoolQuery = new BoolQuery();
             var externalBoolQuery = new BoolQuery();
             var result = parentBoolQuery.mustNot(externalBoolQuery);
@@ -83,35 +109,15 @@ describe('BoolQuery', function () {
             should(result).equal(parentBoolQuery);
         });
 
-        var ValidateAppenderThrows = function (boolQuery, method) {
-            // object != BoolQuery
-            boolQuery[method].bind(boolQuery, {}).should.throw();
-            // null
-            boolQuery[method].bind(boolQuery, null).should.throw();
-            // numeric
-            boolQuery[method].bind(boolQuery, 84).should.throw();
-            // object that looks like BoolQuery
-            boolQuery[method].bind(boolQuery, {filters: {}, generators: {}}).should.throw();
-        };
-
-        it('should throw when using "must" not passing a string or BoolQuery object', function () {
-            var boolQuery = new BoolQuery();
-            ValidateAppenderThrows(boolQuery, 'must');
-        });
-
-        it('should throw when using "should" not passing a string or BoolQuery object', function () {
-            var boolQuery = new BoolQuery();
-            ValidateAppenderThrows(boolQuery, 'should');
-        });
-
-        it('should throw when using "mustNot" not passing a string or BoolQuery object', function () {
+        it('should throw when not passing a string or BoolQuery object', function () {
             var boolQuery = new BoolQuery();
             ValidateAppenderThrows(boolQuery, 'mustNot');
         });
     });
 
-
-    describe('data', function () {
+    // TODO: These tests rely on the generator and calls to get value when they should just be checking
+    // the raw data structures for verification. These tests are more generator specific.
+    describe('#applyQuery', function () {
         it('should produce a single bool with single BoolQuery composition', function () {
             var result = new BoolQuery().must('field1').beInList([1, 2, 3])
                 .should('field2').beInList([4])
@@ -164,7 +170,12 @@ describe('BoolQuery', function () {
             parentBoolQuery.getvalue().should.eql(queries.deepNestedMustComposition);
         });
 
-        it('should produce the same results after multiple calls to getvalue', function () {
+
+
+    });
+
+    describe('#getvalue', function () {
+        it('should produce the same results after multiple calls', function () {
             var boolQuery = new BoolQuery().must('field1').beInList([1, 2, 3])
                 .should('field2').beInList([4])
                 .should('field3').beInList([5])
@@ -181,7 +192,6 @@ describe('BoolQuery', function () {
 
             result1.should.eql(result2);
         });
-
     });
 
 
