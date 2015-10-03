@@ -11,15 +11,41 @@ var FilterGenerator = require('../lib/generators/filterGenerator');
 
 describe('BoolQuery', function () {
 
+    describe('#applyQuery', function () {
+        it('should take a single query and append it to filters.must', function () {
+            var boolQuery = new BoolQuery();
+            var returnObj = boolQuery.applyQuery('must', { terms: {field1: [1, 2, 3]}});
+            var result = boolQuery.getvalue();
+
+            should(returnObj).be.equal(boolQuery);
+            result.should.eql(queries.mustMatchField1);
+        });
+
+        it('should take an array of queries and append it to filters.must', function () {
+            var q = [
+                { terms: {field1: [1, 2, 3]}},
+                { terms: {field2: [4, 5, 6]}}
+            ];
+
+            var boolQuery = new BoolQuery();
+            var returnObj = boolQuery.applyQuery('must', q);
+            var result = boolQuery.getvalue();
+
+            should(returnObj).be.equal(boolQuery);
+            should(returnObj.filters.must.length).equal(2);
+            result.should.eql(queries.mustMatchField1AndField2);
+        });
+    });
+
     describe('appenders', function () {
 
-        it('must return a FilterGenerator when using "must" passing a string', function () {
+        it('should return a FilterGenerator when using "must" passing a string', function () {
             var boolQuery = new BoolQuery();
             var result = boolQuery.must('test');
             result.should.be.an.instanceOf(FilterGenerator);
         });
 
-        it('must return a FilterGenerator when using "should" passing a string', function () {
+        it('should return a FilterGenerator when using "should" passing a string', function () {
 
             var boolQuery = new BoolQuery();
             var result = boolQuery.should('test');
@@ -27,13 +53,13 @@ describe('BoolQuery', function () {
             result.should.be.an.instanceOf(FilterGenerator);
         });
 
-        it('must return a FilterGenerator when using "mustNot" passing a string', function () {
+        it('should return a FilterGenerator when using "mustNot" passing a string', function () {
             var boolQuery = new BoolQuery();
             var result = boolQuery.mustNot('test');
             result.should.be.an.instanceOf(FilterGenerator);
         });
 
-        it('must return current BoolQuery when using "must" passing an external BoolQuery', function () {
+        it('should return current BoolQuery when using "must" passing an external BoolQuery', function () {
             var parentBoolQuery = new BoolQuery();
             var externalBoolQuery = new BoolQuery();
             var result = parentBoolQuery.must(externalBoolQuery);
@@ -41,7 +67,7 @@ describe('BoolQuery', function () {
             should(result).equal(parentBoolQuery);
         });
 
-        it('must return current BoolQuery when using "should" passing an external BoolQuery', function () {
+        it('should return current BoolQuery when using "should" passing an external BoolQuery', function () {
             var parentBoolQuery = new BoolQuery();
             var externalBoolQuery = new BoolQuery();
             var result = parentBoolQuery.should(externalBoolQuery);
@@ -49,7 +75,7 @@ describe('BoolQuery', function () {
             should(result).equal(parentBoolQuery);
         });
 
-        it('must return current BoolQuery when using "mustNot" passing an external BoolQuery', function () {
+        it('should return current BoolQuery when using "mustNot" passing an external BoolQuery', function () {
             var parentBoolQuery = new BoolQuery();
             var externalBoolQuery = new BoolQuery();
             var result = parentBoolQuery.mustNot(externalBoolQuery);
@@ -68,17 +94,17 @@ describe('BoolQuery', function () {
             boolQuery[method].bind(boolQuery, {filters: {}, generators: {}}).should.throw();
         };
 
-        it('must throw when using "must" not passing a string or BoolQuery object', function () {
+        it('should throw when using "must" not passing a string or BoolQuery object', function () {
             var boolQuery = new BoolQuery();
             ValidateAppenderThrows(boolQuery, 'must');
         });
 
-        it('must throw when using "should" not passing a string or BoolQuery object', function () {
+        it('should throw when using "should" not passing a string or BoolQuery object', function () {
             var boolQuery = new BoolQuery();
             ValidateAppenderThrows(boolQuery, 'should');
         });
 
-        it('must throw when using "mustNot" not passing a string or BoolQuery object', function () {
+        it('should throw when using "mustNot" not passing a string or BoolQuery object', function () {
             var boolQuery = new BoolQuery();
             ValidateAppenderThrows(boolQuery, 'mustNot');
         });
@@ -131,12 +157,29 @@ describe('BoolQuery', function () {
                 .should('field2').beInList([4]).should('field3').beInList([5])
                 .mustNot('field4').beInList([6]);
 
-            var result = parentBoolQuery.must(nestedBoolQuery1.must(nestedBoolQuery2)).getvalue();
+            parentBoolQuery.must(nestedBoolQuery1.must(nestedBoolQuery2));
 
             should(parentBoolQuery.generators.must[0]).be.equal(nestedBoolQuery1);
             should(nestedBoolQuery1.generators.must[0]).be.equal(nestedBoolQuery2);
-            result.should.eql(queries.deepNestedMustComposition);
+            parentBoolQuery.getvalue().should.eql(queries.deepNestedMustComposition);
+        });
 
+        it('should produce the same results after multiple calls to getvalue', function () {
+            var boolQuery = new BoolQuery().must('field1').beInList([1, 2, 3])
+                .should('field2').beInList([4])
+                .should('field3').beInList([5])
+                .mustNot('field4').beInList([6]);
+            var nestedBoolQuery = new BoolQuery().must('field1').beInList([1, 2, 3])
+                .should('field2').beInList([4])
+                .should('field3').beInList([5])
+                .mustNot('field4').beInList([6]);
+
+            boolQuery.must(nestedBoolQuery);
+
+            var result1 = boolQuery.getvalue(); // invokes the generator to modify the filter list
+            var result2 = boolQuery.getvalue(); // should not invoke the generator, list is already modified
+
+            result1.should.eql(result2);
         });
 
     });

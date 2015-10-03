@@ -8,6 +8,15 @@ exports.mustMatchField1 = {
     }
 };
 
+exports.mustMatchField1AndField2 = {
+    bool: {
+        must: [
+            { terms: { 'field1': [1, 2, 3] }},
+            { terms: { 'field2': [4, 5, 6] }}
+        ]
+    }
+};
+
 exports.mustNotMatchField1 = {
     bool: {
         must_not: [
