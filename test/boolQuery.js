@@ -20,6 +20,63 @@ var ValidateAppenderThrows = function (boolQuery, method) {
 };
 
 describe('BoolQuery', function () {
+    describe('#and', function () {
+        it('should return a new BoolQuery and add it to the must generators with no parameters', function() {
+            var expected = new BoolQuery();
+            var actual = expected.and();
+
+            should(expected).not.equal(actual);
+            should(expected.generators.must[0]).equal(actual);
+        });
+
+        it('should return the same BoolQuery and add it to the must generators when called with a BoolQuery', function () {
+            var base = new BoolQuery();
+            var expected = new BoolQuery();
+            var actual = base.and(expected);
+
+            should(expected).equal(actual);
+            should(base.generators.must[0]).equal(actual);
+        });
+    });
+
+    describe('#or', function () {
+        it('should return a new BoolQuery and add it to the should generators with no parameters', function() {
+            var expected = new BoolQuery();
+            var actual = expected.or();
+
+            should(expected).not.equal(actual);
+            should(expected.generators.should[0]).equal(actual);
+        });
+
+        it('should return the same BoolQuery and add it to the should generators when called with a BoolQuery', function () {
+            var base = new BoolQuery();
+            var expected = new BoolQuery();
+            var actual = base.or(expected);
+
+            should(expected).equal(actual);
+            should(base.generators.should[0]).equal(actual);
+        });
+    });
+
+    describe('#not', function () {
+        it('should return a new BoolQuery and add it to the must_not generators with no parameters', function() {
+            var expected = new BoolQuery();
+            var actual = expected.not();
+
+            should(expected).not.equal(actual);
+            should(expected.generators.must_not[0]).equal(actual);
+        });
+
+        it('should return the same BoolQuery and add it to the must_not generators when called with a BoolQuery', function () {
+            var base = new BoolQuery();
+            var expected = new BoolQuery();
+            var actual = base.not(expected);
+
+            should(expected).equal(actual);
+            should(base.generators.must_not[0]).equal(actual);
+        });
+    });
+
 
     describe('#applyQuery', function () {
         it('should take a single query and append it to filters.must', function () {
