@@ -1,0 +1,30 @@
+{
+  "name": "termjs",
+  "version": "0.0.1",
+  "description": "ElasticSearch fluent filter composer",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "should": "^7.1.0",
+    "string": "^3.3.1",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.3"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xpologistics/termjs.git"
+  },
+  "author": "Jay Silberkleit",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xpologistics/termjs/issues"
+  },
+  "homepage": "https://github.com/xpologistics/termjs#readme"
+}
