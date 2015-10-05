@@ -29,7 +29,7 @@ describe('BoolQuery', function () {
     describe('ctor', function () {
         it('should throw an exception when using the default constructor (empty)', function () {
             should(BoolQuery).throw();
-        })
+        });
     });
 
     describe('#isCompatible', function () {
@@ -46,12 +46,21 @@ describe('BoolQuery', function () {
             filter.isCompatible(query).should.be.false();
         });
 
-        it('should return false if the generator factories resolve to the same type', function () {
+        it('should return true if the generator factories resolve to the same type', function () {
+            // using types directly
             var query = new BoolQuery(FilterGenerator);
             var otherQuery  = new BoolQuery(FilterGenerator);
 
             query.isCompatible(otherQuery).should.be.true();
+
+            // wrapping in a function
+            var queryWrapped = new BoolQuery(function (a, b) { return new FilterGenerator(a, b); });
+            var otherWrapped = new BoolQuery(function (a, b) { return new FilterGenerator(a, b); });
+
+            queryWrapped.isCompatible(otherWrapped).should.be.true();
         });
+
+
 
     });
     describe('#and', function () {
