@@ -72,6 +72,12 @@ describe('BoolQuery', function () {
             should(base.generators.must[0]).equal(actual);
         });
 
+        it('should throw when passing an argument that is not BoolQuery', function () {
+            var q = newBoolQuery();
+
+            q.and.bind(q, {}).should.throw();
+        });
+
         it('should throw an exception when trying to pass a BoolQuery with an incompatible generator', function () {
             var filter = new BoolQuery(FilterGenerator);
             var query  = new BoolQuery(QueryGenerator);
@@ -118,6 +124,12 @@ describe('BoolQuery', function () {
 
             filter.or.bind(filter, query).should.not.throw();
         });
+
+        it('should throw when passing an argument that is not BoolQuery', function () {
+            var q = newBoolQuery();
+
+            q.or.bind(q, {}).should.throw();
+        });
     });
 
     describe('#not', function () {
@@ -150,6 +162,12 @@ describe('BoolQuery', function () {
             var query  = new BoolQuery(FilterGenerator);
 
             filter.not.bind(filter, query).should.not.throw();
+        });
+
+        it('should throw when passing an argument that is not BoolQuery', function () {
+            var q = newBoolQuery();
+
+            q.not.bind(q, {}).should.throw();
         });
     });
 
