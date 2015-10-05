@@ -7,6 +7,7 @@ var should = require('should'); // overrides Object.prototype
 
 // put declerations here that you want to use like <obj>.should
 var FilterGenerator = require('../lib/generators/filterGenerator');
+var QueryGenerator  = require('../lib/generators/queryGenerator');
 
 var ValidateAppenderThrows = function (boolQuery, method) {
     // object != BoolQuery
@@ -25,6 +26,34 @@ var newBoolQuery = function() {
 
 
 describe('BoolQuery', function () {
+    describe('ctor', function () {
+        it('should throw an exception when using the default constructor (empty)', function () {
+            should(BoolQuery).throw();
+        })
+    });
+
+    describe('#isCompatible', function () {
+        it('should return false when passed null', function () {
+            var q = newBoolQuery();
+
+            q.isCompatible().should.be.false();
+        });
+
+        it('should return false if the generator factories resolve to different types', function () {
+            var filter = new BoolQuery(FilterGenerator);
+            var query  = new BoolQuery(QueryGenerator);
+
+            filter.isCompatible(query).should.be.false();
+        });
+
+        it('should return false if the generator factories resolve to the same type', function () {
+            var query = new BoolQuery(FilterGenerator);
+            var otherQuery  = new BoolQuery(FilterGenerator);
+
+            query.isCompatible(otherQuery).should.be.true();
+        });
+
+    });
     describe('#and', function () {
         it('should return a new BoolQuery and add it to the must generators with no parameters', function() {
             var expected = newBoolQuery();
@@ -41,6 +70,20 @@ describe('BoolQuery', function () {
 
             should(expected).equal(actual);
             should(base.generators.must[0]).equal(actual);
+        });
+
+        it('should throw an exception when trying to pass a BoolQuery with an incompatible generator', function () {
+            var filter = new BoolQuery(FilterGenerator);
+            var query  = new BoolQuery(QueryGenerator);
+
+            filter.and.bind(filter, query).should.throw();
+        });
+
+        it('should not throw an exception when trying to pass a BoolQuery with a compatible generator', function () {
+            var filter = new BoolQuery(FilterGenerator);
+            var query  = new BoolQuery(FilterGenerator);
+
+            filter.and.bind(filter, query).should.not.throw();
         });
     });
 
@@ -61,6 +104,20 @@ describe('BoolQuery', function () {
             should(expected).equal(actual);
             should(base.generators.should[0]).equal(actual);
         });
+
+        it('should throw an exception when trying to pass a BoolQuery with an incompatible generator', function () {
+            var filter = new BoolQuery(FilterGenerator);
+            var query  = new BoolQuery(QueryGenerator);
+
+            filter.or.bind(filter, query).should.throw();
+        });
+
+        it('should not throw an exception when trying to pass a BoolQuery with a compatible generator', function () {
+            var filter = new BoolQuery(FilterGenerator);
+            var query  = new BoolQuery(FilterGenerator);
+
+            filter.or.bind(filter, query).should.not.throw();
+        });
     });
 
     describe('#not', function () {
@@ -79,6 +136,20 @@ describe('BoolQuery', function () {
 
             should(expected).equal(actual);
             should(base.generators.must_not[0]).equal(actual);
+        });
+
+        it('should throw an exception when trying to pass a BoolQuery with an incompatible generator', function () {
+            var filter = new BoolQuery(FilterGenerator);
+            var query  = new BoolQuery(QueryGenerator);
+
+            filter.not.bind(filter, query).should.throw();
+        });
+
+        it('should not throw an exception when trying to pass a BoolQuery with a compatible generator', function () {
+            var filter = new BoolQuery(FilterGenerator);
+            var query  = new BoolQuery(FilterGenerator);
+
+            filter.not.bind(filter, query).should.not.throw();
         });
     });
 
@@ -129,6 +200,19 @@ describe('BoolQuery', function () {
             ValidateAppenderThrows(boolQuery, 'must');
         });
 
+        it('should throw an exception when trying to pass a BoolQuery with an incompatible generator', function () {
+            var filter = new BoolQuery(FilterGenerator);
+            var query  = new BoolQuery(QueryGenerator);
+
+            filter.must.bind(filter, query).should.throw();
+        });
+
+        it('should not throw an exception when trying to pass a BoolQuery with a compatible generator', function () {
+            var filter = new BoolQuery(FilterGenerator);
+            var query  = new BoolQuery(FilterGenerator);
+
+            filter.must.bind(filter, query).should.not.throw();
+        });
 
     });
 
@@ -154,6 +238,20 @@ describe('BoolQuery', function () {
             ValidateAppenderThrows(boolQuery, 'should');
         });
 
+        it('should throw an exception when trying to pass a BoolQuery with an incompatible generator', function () {
+            var filter = new BoolQuery(FilterGenerator);
+            var query  = new BoolQuery(QueryGenerator);
+
+            filter.should.bind(filter, query).should.throw();
+        });
+
+        it('should not throw an exception when trying to pass a BoolQuery with a compatible generator', function () {
+            var filter = new BoolQuery(FilterGenerator);
+            var query  = new BoolQuery(FilterGenerator);
+
+            filter.should.bind(filter, query).should.not.throw();
+        });
+
     });
 
     describe('#mustNot', function () {
@@ -174,6 +272,20 @@ describe('BoolQuery', function () {
         it('should throw when not passing a string or BoolQuery object', function () {
             var boolQuery = newBoolQuery();
             ValidateAppenderThrows(boolQuery, 'mustNot');
+        });
+
+        it('should throw an exception when trying to pass a BoolQuery with an incompatible generator', function () {
+            var filter = new BoolQuery(FilterGenerator);
+            var query  = new BoolQuery(QueryGenerator);
+
+            filter.mustNot.bind(filter, query).should.throw();
+        });
+
+        it('should not throw an exception when trying to pass a BoolQuery with a compatible generator', function () {
+            var filter = new BoolQuery(FilterGenerator);
+            var query  = new BoolQuery(FilterGenerator);
+
+            filter.mustNot.bind(filter, query).should.not.throw();
         });
     });
 
