@@ -395,5 +395,42 @@ describe('BoolQuery', function () {
         });
     });
 
+    describe('#if#else', function () {
+        it('should produce the "if" filter when the condition is true and not the "else" filter', function () {
+            var boolQuery = newBoolQuery().if(true).must('field1').beInList([1, 2, 3])
+               .else().mustNot('field1').beInList([4, 5, 6]);
+
+            var result = boolQuery.getvalue();
+
+            result.should.eql(queries.mustMatchField1);
+        });
+
+        it('should produce the "else" filter when the condition is false and not the "if" filter', function () {
+            var boolQuery = newBoolQuery().if(false).mustNot('field1').beInList([1, 2, 3])
+                .else().must('field1').beInList([1, 2, 3]);
+
+            var result = boolQuery.getvalue();
+
+            result.should.eql(queries.mustMatchField1);
+        });
+
+        it('should allow chaining if/else statements', function () {
+            var boolQuery = newBoolQuery().if(true).must('field1').beInList([1, 2, 3])
+                .else().mustNot('field1').beInList([4, 5, 6]).if(false).mustNot('field1').beInList('a')
+                .else().must('field2').beInList([4, 5, 6]);
+
+            var result = boolQuery.getvalue();
+
+            result.should.eql(queries.mustMatchField1AndField2);
+        });
+
+        it('should throw an exception when chaining if/else without a closing else', function () {
+            var boolQuery = newBoolQuery();
+            var boolQuery2 = newBoolQuery();
+
+            boolQuery.if(true).must('field1').beInList().if.bind(boolQuery).should.throw();
+        });
+    });
+
 
 });
