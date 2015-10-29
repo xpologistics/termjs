@@ -15,7 +15,7 @@ Term.prototype.query = function () {
     return this._query;
 };
 
-Term.prototype.factory = function () {
+Term.prototype.createNew = function () {
     return new Term();
 };
 
