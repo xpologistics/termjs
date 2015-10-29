@@ -1,5 +1,22 @@
 var exports = module.exports = {};
 
+exports.mustBeFalse = {
+    bool: {
+        must: [
+            { terms: { field1: 0 }}
+        ]
+    }
+};
+
+
+exports.mustBeTrue = {
+    bool: {
+        must: [
+            { terms: { field1: 1 }}
+        ]
+    }
+};
+
 exports.mustMatchField1 = {
     bool: {
         must: [

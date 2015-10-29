@@ -43,6 +43,28 @@ describe('FilterGenerator', function () {
         });
     });
 
+    describe('#beTrue', function () {
+        it('should produce a terms filter with a value of 1', function (done) {
+            var expected = { terms: { field1: [1]}};
+
+            new FilterGenerator(function (actual) {
+                actual.should.eql(expected);
+                done();
+            }, 'field1').beTrue();
+        });
+    });
+
+    describe('#beFalse', function () {
+        it('should produce a terms filter with a value of 0', function (done) {
+            var expected = { terms: { field1: [0]}};
+
+            new FilterGenerator(function (actual) {
+                actual.should.eql(expected);
+                done();
+            }, 'field1').beFalse();
+        });
+    });
+
     describe('#beInRange', function () {
         it('should produce a range within the given minimum and maximum inclusive integers', function (done) {
             var expected = { range: {field1: { gte: 1, lte: 10}}};
