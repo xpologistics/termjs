@@ -15,6 +15,10 @@ Term.prototype.query = function () {
     return this._query;
 };
 
+Term.prototype.factory = function () {
+    return new Term();
+};
+
 Term.prototype.getvalue = function() {
     return {
         filtered: {
