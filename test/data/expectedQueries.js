@@ -1,18 +1,18 @@
 var exports = module.exports = {};
 
-exports.mustBeFalse = {
+exports.field1MustBeFalse = {
     bool: {
         must: [
-            { terms: { field1: 0 }}
+            { terms: { field1: [0] }}
         ]
     }
 };
 
 
-exports.mustBeTrue = {
+exports.field1MustBeTrue = {
     bool: {
         must: [
-            { terms: { field1: 1 }}
+            { terms: { field1: [1] }}
         ]
     }
 };

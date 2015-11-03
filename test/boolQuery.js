@@ -393,6 +393,15 @@ describe('BoolQuery', function () {
 
             result1.should.eql(result2);
         });
+
+        it('should not produce values for empty generators', function () {
+            var boolQuery = newBoolQuery().must('field1').beTrue();
+            var empty = newBoolQuery();
+
+            boolQuery.and(empty);
+
+            boolQuery.getvalue().should.eql(queries.field1MustBeTrue);
+        });
     });
 
     describe('#if#else', function () {
@@ -426,9 +435,30 @@ describe('BoolQuery', function () {
 
         it('should throw an exception when chaining if/else without a closing else', function () {
             var boolQuery = newBoolQuery();
-            var boolQuery2 = newBoolQuery();
 
             boolQuery.if(true).must('field1').beInList().if.bind(boolQuery).should.throw();
+        });
+    });
+
+    describe('#isEmpty', function () {
+        it('should be true when the object has a generator that produces an empty result', function () {
+            var empty = newBoolQuery();
+            var boolQuery = newBoolQuery();
+
+            boolQuery.and(empty);
+
+            boolQuery.isEmpty().should.be.true;
+
+        });
+
+        it('should be false when the object has a generator that produces a filter', function () {
+            var notEmpty = newBoolQuery();
+            var boolQuery = newBoolQuery();
+
+            notEmpty.must('field1').beTrue();
+
+            boolQuery.and(notEmpty);
+            boolQuery.isEmpty().should.be.false;
         });
     });
 

@@ -12,15 +12,13 @@ function Term() {
 Object.defineProperty(Term.prototype, "filter", {
     get: function () { return this._filter; },
     enumerable: true,
-    configurable: false,
-    writable: false
+    configurable: false
 });
 
 Object.defineProperty(Term.prototype, "query", {
     get: function () { return this._query; },
     enumerable: true,
-    configurable: false,
-    writable: false
+    configurable: false
 });
 
 /*
