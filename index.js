@@ -30,4 +30,5 @@ Term.prototype.getvalue = function() {
     }
 };
 
+Term.BoolQuery = BoolFilter;
 
