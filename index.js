@@ -2,6 +2,8 @@ var BoolFilter = require('./lib/boolQuery');
 var filterGenerator = require('./lib/generators/filterGenerator');
 var queryGenerator = require('./lib/generators/queryGenerator');
 
+module.exports = Term;
+
 function Term() {
     this._query = new BoolFilter(queryGenerator);
     this._filter = new BoolFilter(filterGenerator);
