@@ -9,6 +9,21 @@ function Term() {
     this._filter = new BoolFilter(filterGenerator);
 }
 
+Object.defineProperty(Term.prototype, "filter", {
+    get: function () { return this._filter; },
+    enumerable: true,
+    configurable: false,
+    writable: false
+});
+
+Object.defineProperty(Term.prototype, "query", {
+    get: function () { return this._query; },
+    enumerable: true,
+    configurable: false,
+    writable: false
+});
+
+/*
 Term.prototype.filter = function () {
     return this._filter;
 };
@@ -16,7 +31,7 @@ Term.prototype.filter = function () {
 Term.prototype.query = function () {
     return this._query;
 };
-
+*/
 Term.prototype.createNew = function () {
     return new Term();
 };
