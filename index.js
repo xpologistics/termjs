@@ -21,15 +21,6 @@ Object.defineProperty(Term.prototype, "query", {
     configurable: false
 });
 
-/*
-Term.prototype.filter = function () {
-    return this._filter;
-};
-
-Term.prototype.query = function () {
-    return this._query;
-};
-*/
 Term.prototype.createNew = function () {
     return new Term();
 };

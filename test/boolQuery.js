@@ -184,7 +184,7 @@ describe('BoolQuery', function () {
     describe('#applyQuery', function () {
         it('should take a single query and append it to filters.must', function () {
             var boolQuery = newBoolQuery();
-            var returnObj = boolQuery.applyQuery('must', { terms: {field1: [1, 2, 3]}});
+            var returnObj = boolQuery.applyFilter('must', { terms: {field1: [1, 2, 3]}});
             var result = boolQuery.getvalue();
 
             should(returnObj).be.equal(boolQuery);
@@ -198,7 +198,7 @@ describe('BoolQuery', function () {
             ];
 
             var boolQuery = newBoolQuery();
-            var returnObj = boolQuery.applyQuery('must', q);
+            var returnObj = boolQuery.applyFilter('must', q);
             var result = boolQuery.getvalue();
 
             should(returnObj).be.equal(boolQuery);
