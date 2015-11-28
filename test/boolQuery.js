@@ -1,7 +1,7 @@
 // put decelerations here that you don't want overriden by "should"
 // You need to do should(<obj>) to use these
 var BoolQuery = require('../lib/boolQuery');
-var queries = require('./data/expectedQueries');
+var filters = require('./data/expectedFilters');
 
 var should = require('should'); // overrides Object.prototype
 
@@ -181,14 +181,14 @@ describe('BoolQuery', function () {
     });
 
 
-    describe('#applyQuery', function () {
+    describe('#applyFilter', function () {
         it('should take a single query and append it to filters.must', function () {
             var boolQuery = newBoolQuery();
             var returnObj = boolQuery.applyFilter('must', { terms: {field1: [1, 2, 3]}});
             var result = boolQuery.getvalue();
 
             should(returnObj).be.equal(boolQuery);
-            result.should.eql(queries.mustMatchField1);
+            result.should.eql(filters.mustMatchField1);
         });
 
         it('should take an array of queries and append it to filters.must', function () {
@@ -203,7 +203,7 @@ describe('BoolQuery', function () {
 
             should(returnObj).be.equal(boolQuery);
             should(returnObj.filters.must.length).equal(2);
-            result.should.eql(queries.mustMatchField1AndField2);
+            result.should.eql(filters.mustMatchField1AndField2);
         });
     });
 
@@ -326,7 +326,7 @@ describe('BoolQuery', function () {
                 .mustNot('field4').beInList([6])
                 .getvalue();
 
-            result.should.eql(queries.mustMatchField1AndField2OrField3AndNotField4);
+            result.should.eql(filters.mustMatchField1AndField2OrField3AndNotField4);
         });
 
         it('should produce a nested bool in must passing a BoolQuery into the "must" appender', function () {
@@ -334,7 +334,7 @@ describe('BoolQuery', function () {
             var parentBoolQuery = newBoolQuery().must(nestedBoolQuery);
             var result = parentBoolQuery.getvalue();
 
-            result.should.eql(queries.mustMatchField1Nested);
+            result.should.eql(filters.mustMatchField1Nested);
         });
 
         it('should produce a nested bool in should passing a BoolQuery into the "should" appender', function () {
@@ -342,7 +342,7 @@ describe('BoolQuery', function () {
             var parentBoolQuery = newBoolQuery().should(nestedBoolQuery);
             var result = parentBoolQuery.getvalue();
 
-            result.should.eql(queries.mustMatchField1OrField2Nested);
+            result.should.eql(filters.mustMatchField1OrField2Nested);
         });
 
         it('should produce a nested bool in must_not passing a BoolQuery into the "mustNot" appender', function () {
@@ -350,7 +350,7 @@ describe('BoolQuery', function () {
             var parentBoolQuery = newBoolQuery().mustNot(nestedBoolQuery);
             var result = parentBoolQuery.getvalue();
 
-            result.should.eql(queries.mustNotMatchField1Nested);
+            result.should.eql(filters.mustNotMatchField1Nested);
         });
 
         it('should produce a deep nested bool in must using multiple BoolQuery composition', function () {
@@ -368,7 +368,7 @@ describe('BoolQuery', function () {
 
             should(parentBoolQuery.generators.must[0]).be.equal(nestedBoolQuery1);
             should(nestedBoolQuery1.generators.must[0]).be.equal(nestedBoolQuery2);
-            parentBoolQuery.getvalue().should.eql(queries.deepNestedMustComposition);
+            parentBoolQuery.getvalue().should.eql(filters.deepNestedMustComposition);
         });
 
 
@@ -400,7 +400,13 @@ describe('BoolQuery', function () {
 
             boolQuery.and(empty);
 
-            boolQuery.getvalue().should.eql(queries.field1MustBeTrue);
+            boolQuery.getvalue().should.eql(filters.field1MustBeTrue);
+        });
+
+        it('should not produce values for empty bools', function () {
+            var result = newBoolQuery().getvalue();
+
+            result.should.eql({});
         });
     });
 
@@ -411,7 +417,7 @@ describe('BoolQuery', function () {
 
             var result = boolQuery.getvalue();
 
-            result.should.eql(queries.mustMatchField1);
+            result.should.eql(filters.mustMatchField1);
         });
 
         it('should produce the "else" filter when the condition is false and not the "if" filter', function () {
@@ -420,7 +426,7 @@ describe('BoolQuery', function () {
 
             var result = boolQuery.getvalue();
 
-            result.should.eql(queries.mustMatchField1);
+            result.should.eql(filters.mustMatchField1);
         });
 
         it('should allow chaining if/else statements', function () {
@@ -430,7 +436,7 @@ describe('BoolQuery', function () {
 
             var result = boolQuery.getvalue();
 
-            result.should.eql(queries.mustMatchField1AndField2);
+            result.should.eql(filters.mustMatchField1AndField2);
         });
 
         it('should throw an exception when chaining if/else without a closing else', function () {
