@@ -26,11 +26,14 @@ Term.prototype.createNew = function () {
 };
 
 Term.prototype.getvalue = function() {
+    var qBool = this._query.getvalue() || {};
+    var fBool = this._filter.getvalue();
+
+    if (!_.isEmpty(fBool))
+        qBool.filter = fBool;
+
     return {
-        filtered: {
-            query: this._query.getvalue(),
-            filter: this._filter.getvalue()
-        }
+        query: qBool
     }
 };
 
