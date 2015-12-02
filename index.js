@@ -1,6 +1,7 @@
-var BoolFilter = require('./lib/boolQuery');
+var BoolFilter      = require('./lib/boolQuery');
 var filterGenerator = require('./lib/generators/filterGenerator');
-var queryGenerator = require('./lib/generators/queryGenerator');
+var queryGenerator  = require('./lib/generators/queryGenerator');
+var _               = require('underscore');
 
 module.exports = Term;
 
