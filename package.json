@@ -1,6 +1,6 @@
 {
   "name": "termjs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ElasticSearch fluent filter composer",
   "main": "index.js",
   "directories": {

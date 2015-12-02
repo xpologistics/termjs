@@ -1,6 +1,7 @@
-var BoolFilter = require('./lib/boolQuery');
+var BoolFilter      = require('./lib/boolQuery');
 var filterGenerator = require('./lib/generators/filterGenerator');
-var queryGenerator = require('./lib/generators/queryGenerator');
+var queryGenerator  = require('./lib/generators/queryGenerator');
+var _               = require('underscore');
 
 module.exports = Term;
 
@@ -26,11 +27,16 @@ Term.prototype.createNew = function () {
 };
 
 Term.prototype.getvalue = function() {
+    var qBool = this._query.getvalue();
+    var fBool = this._filter.getvalue();
+
+    qBool = _.isEmpty(qBool) ? { bool: {}} : qBool;
+
+    if (!_.isEmpty(fBool))
+        qBool.bool.filter = fBool;
+
     return {
-        filtered: {
-            query: this._query.getvalue(),
-            filter: this._filter.getvalue()
-        }
+        query: qBool
     }
 };
 
