@@ -27,11 +27,13 @@ Term.prototype.createNew = function () {
 };
 
 Term.prototype.getvalue = function() {
-    var qBool = this._query.getvalue() || {};
+    var qBool = this._query.getvalue();
     var fBool = this._filter.getvalue();
 
+    qBool = _.isEmpty(qBool) ? { bool: {}} : qBool;
+
     if (!_.isEmpty(fBool))
-        qBool.filter = fBool;
+        qBool.bool.filter = fBool;
 
     return {
         query: qBool
