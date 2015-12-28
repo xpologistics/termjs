@@ -97,6 +97,38 @@ describe('FilterGenerator', function () {
                 done();
             }, 'field1').beInRange(null, 10);
         });
+
+        it('should produce a day range filter with date math and non-standard date', function (done) {
+            var expected = { range: {field1: { lte: '10/25/1981||/d', gte: '10/25/1981||/d' }}};
+            new FilterGenerator(function (actual) {
+                actual.should.eql(expected);
+                done();
+            }, 'field1').beInRange('10/25/1981', '10/25/1981');
+        });
+
+        it('should produce a day range filter with date math and ISO 8601 date', function (done) {
+            var expected = { range: {field1: { lte: '1981-10-25||/d', gte: '1981-10-25||/d' }}};
+            new FilterGenerator(function (actual) {
+                actual.should.eql(expected);
+                done();
+            }, 'field1').beInRange('1981-10-25', '1981-10-25');
+        });
+
+        it('should produce a time range filter with non-standard date', function (done) {
+            var expected = { range: {field1: { lte: '10/25/1981 15:00', gte: '10/25/1981 14:00' }}};
+            new FilterGenerator(function (actual) {
+                actual.should.eql(expected);
+                done();
+            }, 'field1').beInRange('10/25/1981 14:00', '10/25/1981 15:00');
+        });
+
+        it('should produce a time range filter with ISO 8601 date', function (done) {
+            var expected = { range: {field1: { lte: '1981-10-25T15:00', gte: '1981-10-25T14:00' }}};
+            new FilterGenerator(function (actual) {
+                actual.should.eql(expected);
+                done();
+            }, 'field1').beInRange('1981-10-25T14:00', '1981-10-25T15:00');
+        });
     });
 
     describe('#beNull', function () {
