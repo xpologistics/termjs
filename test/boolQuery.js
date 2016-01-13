@@ -2,6 +2,7 @@
 // You need to do should(<obj>) to use these
 var BoolQuery = require('../lib/boolQuery');
 var filters = require('./data/expectedFilters');
+var _ = require('underscore');
 
 var should = require('should'); // overrides Object.prototype
 
@@ -26,6 +27,20 @@ var newBoolQuery = function() {
 
 
 describe('BoolQuery', function () {
+    describe('compatibility', function () {
+        it('should have different type hashes for BoolQuery and all generators', function () {
+            var ids = [
+                BoolQuery.prototype.__type,
+                FilterGenerator.prototype.__type,
+                QueryGenerator.prototype.__type
+            ];
+            var expected = ids.length;
+            var actual = _.uniq(ids).length;
+            
+            expected.should.eql(actual);
+        });
+    });
+
     describe('ctor', function () {
         it('should throw an exception when using the default constructor (empty)', function () {
             should(BoolQuery).throw();
