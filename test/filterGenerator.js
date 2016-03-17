@@ -129,6 +129,15 @@ describe('FilterGenerator', function () {
                 done();
             }, 'field1').beInRange('1981-10-25T14:00', '1981-10-25T15:00');
         });
+
+        it('should produce a day range filter with ISO 8601 date and times 00:00', function (done) {
+            var expected = { range: {field1: { lte: '1981-10-25T00:00:00||/d', gte: '1981-10-24T00:00:00||/d' }}};
+            new FilterGenerator(function (actual) {
+                actual.should.eql(expected);
+                done();
+            }, 'field1').beInRange('1981-10-24T00:00:00', '1981-10-25T00:00:00');
+        });      
+
     });
 
     describe('#beNull', function () {
