@@ -20,4 +20,23 @@ describe('QueryGenerator', function () {
             }, ['field1', 'field2']).startsWith('test');
         });
     });
+
+    describe('#beMissing', function () {
+        it('should produce a must not exists query on the passed in fields', function (done) {
+            var expected = {
+                bool: {
+                    must_not: {
+                        exists: {
+                            field: ['field1', 'field2']
+                        }
+                    }
+                }
+            };
+
+            new QueryGenerator(function (actual) {
+                actual.should.eql(expected);
+                done();
+            }, ['field1', 'field2']).beMissing();
+        });
+    });
 });
