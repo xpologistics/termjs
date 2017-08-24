@@ -21,6 +21,40 @@ describe('QueryGenerator', function () {
         });
     });
 
+    describe('#wildcard', function () {
+        it('should produce a wildcard bool query on the passed in fields', function (done) {
+            var expected = {
+                bool: {
+                  should: [
+                    {
+                      query: {
+                        wildcard: {
+                          field1: {
+                            value: '*123456*'
+                          }
+                        }
+                      }
+                    },
+                    {
+                      query: {
+                        wildcard: {
+                          field2: {
+                            value: '*123456*'
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              };
+
+            new QueryGenerator(function (actual) {
+                actual.should.eql(expected);
+                done();
+            }, ['field1', 'field2']).wildcard("*123456*");
+        });
+    });
+
     describe('#beMissing', function () {
         it('should produce a must not exists query on the passed in fields', function (done) {
             var expected = {
