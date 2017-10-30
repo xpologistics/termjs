@@ -142,4 +142,16 @@ describe('FilterGenerator', function () {
 
         });
     });
+
+    describe('#prefix', function () {
+        it('should produce a prefix filter', function (done) {
+            var expected = { "prefix": { "field1": 'myvalue'}};
+
+            new FilterGenerator(function (actual) {
+                actual.should.eql(expected);
+                done();
+            }, 'field1').prefix('myvalue');
+
+        });
+    });
 });
